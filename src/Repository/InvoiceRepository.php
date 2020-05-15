@@ -2,21 +2,21 @@
 
 namespace App\Repository;
 
-use App\Entity\Invoices;
+use App\Entity\Invoice;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @method Invoices|null find($id, $lockMode = null, $lockVersion = null)
- * @method Invoices|null findOneBy(array $criteria, array $orderBy = null)
- * @method Invoices[]    findAll()
- * @method Invoices[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method Invoice|null find($id, $lockMode = null, $lockVersion = null)
+ * @method Invoice|null findOneBy(array $criteria, array $orderBy = null)
+ * @method Invoice[]    findAll()
+ * @method Invoice[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class InvoicesRepository extends ServiceEntityRepository
+class InvoiceRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, Invoices::class);
+        parent::__construct($registry, Invoice::class);
     }
 
     // /**

@@ -2,13 +2,19 @@
 
 namespace App\Entity;
 
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\Collection;
+use ApiPlatform\Core\Annotation\ApiResource;
+use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
+ * @ApiResource
+ * @UniqueEntity(fields="email",message="Un utilisateur ayant cette adresse email existe deja")
  */
 class User implements UserInterface
 {
@@ -16,11 +22,15 @@ class User implements UserInterface
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
+     * @Groups({"customers_resd","invoices_subresource"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=180, unique=true)
+     * @Groups({"customers_resd","invoices_read","invoices_subresource"})
+     * @Assert\NotBlank(message="L'email doit etre renseigner")
+     * @Assert\Email(message="Le format de l'adresse email doit etre valide")
      */
     private $email;
 
@@ -32,16 +42,25 @@ class User implements UserInterface
     /**
      * @var string The hashed password
      * @ORM\Column(type="string")
+     * @Assert\NotBlank(message="Le mot de passe est obligatoire")
      */
     private $password;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"customers_resd","invoices_read","invoices_subresource"})
+     * @Assert\NotBlank(message="Le prenom est obligatoire")
+     * @Assert\Length(min=3,minMessage="Le prenom doit faire entre 3 et 225 caracteres",max=225,
+     * maxMessage="Le prenom doit faire entre 3 et 225 caracteres")
      */
     private $firstName;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"customers_resd","invoices_read","invoices_subresource"})
+     * @Assert\NotBlank(message="Le nom est obligatoire")
+     * @Assert\Length(min=3,minMessage="Le nom de famille doit faire entre 3 et 225 caracteres",max=225,
+     * maxMessage="Le de famille doit faire entre 3 et 225 caracteres")
      */
     private $lastName;
 
@@ -54,6 +73,7 @@ class User implements UserInterface
     {
         $this->customers = new ArrayCollection();
     }
+
 
     public function getId(): ?int
     {
@@ -187,4 +207,6 @@ class User implements UserInterface
 
         return $this;
     }
+
+
 }
