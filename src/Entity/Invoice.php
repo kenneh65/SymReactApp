@@ -33,7 +33,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * normalizationContext={"groups"={"invoices_read"}},
  * denormalizationContext={"disable_type_enforcement"=true}
  * ) 
- * @ApiFilter(OrderFilter::class,properties={"amount","sentAt","chrono"})
+ * @ApiFilter(OrderFilter::class,properties={"amount","sentAt"})
  */
 class Invoice
 {
@@ -79,8 +79,8 @@ class Invoice
     /**
      * @ORM\Column(type="integer")
      * @Groups({"invoices_read","customers_resd","invoices_subresource"})
-     * @Assert\Notblank(message="Le chrono de la facture doit etre renseigne")
      * @Assert\Type(type="integer",message="Le chrono de la fature doit etre un nombre")
+     * @Assert\Notblank(message="Le chrono de la facture doit etre renseigne")
      */
     private $chrono;
 
