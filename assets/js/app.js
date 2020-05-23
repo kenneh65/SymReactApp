@@ -1,26 +1,38 @@
 // les import important
-import React from 'react';
+import React, { useState, useContext } from 'react';
 import ReactDOM from "react-dom"
 import '../css/app.css';
 import Navbar from './components/Navbar';
 import HomePage from './pages/HomePage';
-import {Switch, Route, HashRouter} from 'react-router-dom';
+import {Switch, Route, HashRouter, Redirect, withRouter} from 'react-router-dom';
 import CustomersPage from './pages/CustomersPage';
 import InvoicesPage from "./pages/InvoicesPage";
+import LoginPage from './pages/LoginPage';
+import authAPI from './services/authAPI';
+import AuthContext from './contexts/AuthContext';
+import PrivateRoute from './components/PrivateRoute';
 
+authAPI.setup();
 const App = () => {
+const [isAuthenticated,setIsAuthenticated]=useState(true);  
+const NavBarWithRouter=withRouter(Navbar);
     return (
+        <AuthContext.Provider value={ {
+            isAuthenticated,
+            setIsAuthenticated
+        }}>
         <HashRouter>
-            <Navbar/>
+            <NavBarWithRouter  />
             <main className="container pt-5">
                 <Switch>
-                    <Route path="/invoices" component={InvoicesPage}/>
-                    <Route path="/customers" component={CustomersPage}/>
+                <Route path="/login" component={LoginPage}/>
+                    <PrivateRoute path="/invoices"  component={InvoicesPage}/>
+                    <PrivateRoute path="/customers"  component={CustomersPage} />
                     <Route path="/" component={HomePage}/>
-
                 </Switch>
             </main>
         </HashRouter>
+        </AuthContext.Provider>
     );
 };
 const rootElement = document.querySelector('#app');
