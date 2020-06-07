@@ -3,6 +3,7 @@ import Field from '../components/forms/Field';
 import { Link } from 'react-router-dom';
 import Axios from 'axios';
 import userService from '../services/userService';
+import { toast } from 'react-toastify';
 const RegisterPage = ({history}) => {
 
 const [user,setUser]=useState({
@@ -31,6 +32,7 @@ const handleChange=({currentTarget})=>{
             if (user.password!==user.passwordConfirm) {
                 apiErrors.passwordConfirm="Votre mot de passe de confirmation n'est pas correcte";
                 setErrors(apiErrors);
+                toast.error("Des erreurs dans votre formulaire")
                 return;
                 
             }
@@ -39,6 +41,7 @@ const handleChange=({currentTarget})=>{
             try {
                  await userService.register(user)
                 setErrors({});
+                toast.success("Vous etes desormais inscrit, vous pouvez vous conecter !")
                 history.replace("/login");
              }
             catch (error) {
@@ -48,11 +51,10 @@ const handleChange=({currentTarget})=>{
                    violations.forEach(violation=>{
                        apiErrors[violation.propertyPath]=violation.message;
                     });
+                    toast.error("Des erreurs dans votre formulaire")
                    setErrors(apiErrors);
-                   console.log(apiErrors)
                 }
             }
-             console.log(user)
         };
 
     return ( 

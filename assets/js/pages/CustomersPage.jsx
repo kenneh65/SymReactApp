@@ -2,17 +2,22 @@ import React, {useEffect, useState} from 'react';
 import Pagination from '../components/Pagination';
 import ServiceCustomers from '../services/CustomersService';
 import { Link } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import TableLoader from '../components/loaders/TableLoader';
 const CustomersPage = (props) => {
     const [customers, setCustomers] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [search, setSearch] = useState('');
+    const [loading,setLoading]=useState(true)
     //Permet de recuperer les customers
     const fetchCustomers = async () => {
         try {
             const data = await ServiceCustomers.findAll();
             setCustomers(data);
+            setLoading(false);
         } catch (error) {
             console.log(error.response);
+            toast.error("Impossible de charger les clients")
         }
     }
     // Chercher  les customer au chargement du composant
@@ -27,8 +32,10 @@ const CustomersPage = (props) => {
         setCustomers(customers.filter(customer => customer.id !== id));
         try {
             await ServiceCustomers.delete(id)
+            toast.success("Le client a bien ete supprime")
         } catch (error) {
             setCustomers(originalCustomers);
+            toast.error("La suppression du client n'a pas reussi")
         }
     };
 
@@ -64,7 +71,7 @@ const CustomersPage = (props) => {
                 <input type="text" onChange={handleSearch} value={search} className="form-control"
                        placeholder="Rechercher ..."/>
             </div>
-            <table className="table table-hover">
+         <table className="table table-hover">
                 <thead>
                 <tr>
                     <th>ID</th>
@@ -76,13 +83,13 @@ const CustomersPage = (props) => {
                     <th></th>
                 </tr>
                 </thead>
-                <tbody>
+                {!loading&&     <tbody>
 
                 {paginateCustomers.map(customer =>
                     <tr key={customer.id}>
                         <td>{customer.id}</td>
                         <td>
-                            <a href="#">{customer.lastName} - {customer.firstName}</a>
+                            <Link to={"/customers/"+customer.id}>{customer.lastName} - {customer.firstName}</Link>
                         </td>
                         <td>{customer.email}</td>
                         <td>{customer.company}</td>
@@ -100,8 +107,9 @@ const CustomersPage = (props) => {
                         </td>
                     </tr>
                 )}
-                </tbody>
+                </tbody>}
             </table>
+          {loading &&   <TableLoader />}
             {itemsPerPage < filteredCustomers.length && (<Pagination
                     currentPage={currentPage}
                     itemsPerPage={itemsPerPage}

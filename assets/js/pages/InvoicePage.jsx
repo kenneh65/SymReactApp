@@ -5,8 +5,11 @@ import { Link } from 'react-router-dom';
 import CustomersService from '../services/CustomersService';
 import Axios from 'axios';
 import ServiceInvoices from '../services/ServiceInvoices';
+import { toast } from 'react-toastify';
+import FormContentLoader from '../components/loaders/FormContentLoader';
 const InvoicePage = ({history,match}) => {
     const {id="new"}=match.params;
+    const [loading,setLoading]=useState(true)
     const [invoice,setInvoice]=useState({
         amount:"",
         customer:"",
@@ -22,12 +25,14 @@ const InvoicePage = ({history,match}) => {
         const  fetchCustomers=async() =>{
             try {
                const data= await CustomersService.findAll();
-                setCustomers(data)
+                setCustomers(data);
+                setLoading(false);
                 if (!invoice.customer) {
                     setInvoice({...invoice,customer:data[0].id})
                 }
             }catch(errors) {
                  console.log(errors.response);
+                 toast.error("Impossible de charger les clients")
                  history.replace("/invoices")
             }
         };
@@ -35,9 +40,11 @@ const InvoicePage = ({history,match}) => {
         const  fetchInvoice=async (id)=>{
             try {
                 const {amount,status,customer}=await ServiceInvoices.find(id);
-               setInvoice({amount,status,customer:customer.id})
+               setInvoice({amount,status,customer:customer.id});
+               setLoading(false);
             }catch(error) {
                  console.log(error.response)
+                 toast.error("Impossible de charger la facture demandee")
                  history.replace("/invoices")
             }
         };
@@ -62,10 +69,12 @@ const InvoicePage = ({history,match}) => {
                     event.preventDefault();
                     try {
                      if (editing) {
-                       await ServiceInvoices.update(id,invoice)
+                       await ServiceInvoices.update(id,invoice);
+                       toast.success("La facture a bien ete modifiee")
                      }else{
 
                         await ServiceInvoices.create(invoice)
+                        toast.success("La facture a bien ete enregistree")
                         history.replace("/invoices")
                      }
 
@@ -77,6 +86,7 @@ const InvoicePage = ({history,match}) => {
                                 apiErrors[propertyPath]=message;
                             });
                             setErrors(apiErrors);
+                            toast.error("Des erreurs dans votre formulaire")
                             console.log(apiErrors)
                         }
                     }
@@ -84,9 +94,11 @@ const InvoicePage = ({history,match}) => {
 
 
     return ( <>
+  
      {(!editing && <h1>Creation d'une facture</h1>)||
         (<h1>Modification d'une facture</h1>)}
-    <form onSubmit={handleSubmit}>
+         {loading&&  <FormContentLoader/>}
+   {!loading&& <form onSubmit={handleSubmit}>
         <Field name="amount" type="number" placeholder="Montant de la facture" label="Montant"
          onChange={handleChange} value={invoice.amount} error={errors.amount} />
 
@@ -108,7 +120,7 @@ const InvoicePage = ({history,match}) => {
                 <button className="btn btn-success">Enregistrer</button>
                 <Link to={'/invoices'} className="btn btn-link ">Retour a la liste</Link>
             </div>
-    </form>
+    </form>}
     </> );
 }
  

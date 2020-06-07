@@ -3,6 +3,8 @@ import Field from "../components/forms/Field";
 import {Link} from "react-router-dom";
 import Axios from "axios";
 import CustomersService from '../services/CustomersService';
+import { toast } from 'react-toastify';
+import FormContentLoader from '../components/loaders/FormContentLoader';
 
 const CustomerPage = ({match,history}) => {
     const {id="new"}=match.params;
@@ -19,21 +21,25 @@ const CustomerPage = ({match,history}) => {
     firstName:"",
     email:"",
     company:""});
+    const [loading,setLoading]=useState(false);
     const [editing,setEditing]=useState(false); 
 
     const  fetchCustomer=async id=>{
         try {
             const {firstName,lastName,email,company}= await CustomersService.find(id);
-            setCustomer({firstName,lastName,email,company})
+            setCustomer({firstName,lastName,email,company});
+            setLoading(false)
         }catch(error) {
              console.log(error.response);
+             toast.error("Le client n'a pas pu etre charge")
              history.replace("/customers");
         }
     };
     useEffect(()=>{
         if (id!=="new"){
             setEditing(true);
-            fetchCustomer(id)
+            setLoading(true);
+            fetchCustomer(id);
         }
     },[id]);
 
@@ -46,17 +52,18 @@ setCustomer({...customer,[name]:value})
    event.preventDefault();
    
    try {
+    setError({})
         if (editing) {
            await  
             CustomersService.update(id,customer);
-           ///// notification de succesc
+          toast.success("Le client a bien ete modifie")
            history.replace("/customers");
         }else{
+           
            await  CustomersService.create(customer);
+           toast.success("Le client a bien ete cree")
         }
 
-      
-        setError({})
    }catch ({response}) {
        const {violations}=response.data
        if(violations){
@@ -65,6 +72,7 @@ setCustomer({...customer,[name]:value})
                apiErrors[propertyPath]=message;
            });
            setError(apiErrors);
+           toast.error("Des erreurs dans votre formulaire ")
            console.log(apiErrors)
        }
    }
@@ -73,6 +81,8 @@ setCustomer({...customer,[name]:value})
     return ( <>
         {(!editing && <h1>Creation d'un client</h1>)||
         (<h1>Modification d'un client</h1>)}
+        {loading&& <FormContentLoader/>}
+        {!loading&&(
         <form onSubmit={handleSubmit}>
             <Field error={error.lastName}  onChange={handleChange} value={customer.lastName} name="lastName"  label="Nom de famille" placeholder="Nom de famille du client" />
             <Field error={error.firstName}  onChange={handleChange} value={customer.firstName} name="firstName" label="prenom de famille" placeholder="prenom de famille du client" />
@@ -83,6 +93,7 @@ setCustomer({...customer,[name]:value})
                 <Link to={'/customers'} className="btn btn-link ">Retour a la liste</Link>
             </div>
         </form>
+        )}
     </> );
 };
  
