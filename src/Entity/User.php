@@ -24,13 +24,13 @@ class User implements UserInterface
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups({"customers_resd","invoices_subresource","users_read"})
+     * @Groups({"customers_read","invoices_subresource","users_read"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=180, unique=true)
-     * @Groups({"customers_resd","invoices_read","invoices_subresource","users_read"})
+     * @Groups({"customers_read","invoices_read","invoices_subresource","users_read"})
      * @Assert\NotBlank(message="L'email doit etre renseigner")
      * @Assert\Email(message="Le format de l'adresse email doit etre valide")
      */
@@ -50,19 +50,19 @@ class User implements UserInterface
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"customers_resd","invoices_read","invoices_subresource","users_read"})
-     * @Assert\NotBlank(message="Le prenom est obligatoire")
+     * @Groups({"customers_read","invoices_read","invoices_subresource","users_read"})
      * @Assert\Length(min=3,minMessage="Le prenom doit faire entre 3 et 225 caracteres",max=225,
      * maxMessage="Le prenom doit faire entre 3 et 225 caracteres")
+     * @Assert\NotBlank(message="Le prenom est obligatoire")
      */
     private $firstName;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"customers_resd","invoices_read","invoices_subresource","users_read"})
-     * @Assert\NotBlank(message="Le nom est obligatoire")
+     * @Groups({"customers_read","invoices_read","invoices_subresource","users_read"})
      * @Assert\Length(min=3,minMessage="Le nom de famille doit faire entre 3 et 225 caracteres",max=225,
      * maxMessage="Le de famille doit faire entre 3 et 225 caracteres")
+     * @Assert\NotBlank(message="Le nom est obligatoire")
      */
     private $lastName;
 

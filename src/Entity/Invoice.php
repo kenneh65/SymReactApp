@@ -41,28 +41,28 @@ class Invoice
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups({"invoices_read","customers_resd","invoices_subresource"})
+     * @Groups({"invoices_read","customers_read","invoices_subresource"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="float")
-     * @Groups({"invoices_read","customers_resd","invoices_subresource"})
-     * @Assert\Notblank(message="Le montant de la facture est obligatoire")
+     * @Groups({"invoices_read","customers_read","invoices_subresource"})
      * @Assert\Type(type="numeric",message="Le montant de la fature doit etre un numerique")
+     * @Assert\Notblank(message="Le montant de la facture est obligatoire")
      */
     private $amount;
 
     /**
      * @ORM\Column(type="datetime")
-     * @Groups({"invoices_read","customers_resd","invoices_subresource"})
+     * @Groups({"invoices_read","customers_read","invoices_subresource"})
      * @Assert\Notblank(message="La date d'envoi doit etre renseignee")
      */
     private $sentAt;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"invoices_read","customers_resd","invoices_subresource"})
+     * @Groups({"invoices_read","customers_read","invoices_subresource"})
      * @Assert\Notblank(message="Le status de la facture est obligatoire")
      * @Assert\Choice(choices={"SENT","PAID","CANCELLED"}, message="Le status doit etre SENT , PAID ou CANCELLED")
      */
@@ -78,7 +78,7 @@ class Invoice
 
     /**
      * @ORM\Column(type="integer")
-     * @Groups({"invoices_read","customers_resd","invoices_subresource"})
+     * @Groups({"invoices_read","customers_read","invoices_subresource"})
      * @Assert\Type(type="integer",message="Le chrono de la fature doit etre un nombre")
      * @Assert\Notblank(message="Le chrono de la facture doit etre renseigne")
      */
@@ -103,7 +103,7 @@ class Invoice
         return $this->amount;
     }
 
-    public function setAmount(float $amount): self
+    public function setAmount( $amount): self
     {
         $this->amount = $amount;
 

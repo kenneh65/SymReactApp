@@ -2,6 +2,7 @@
 import React, { useState, useContext } from 'react';
 import ReactDOM from "react-dom"
 import '../css/app.css';
+import '../css/bootswatch.css';
 import Navbar from './components/Navbar';
 import HomePage from './pages/HomePage';
 import {Switch, Route, HashRouter, Redirect, withRouter} from 'react-router-dom';
@@ -11,6 +12,9 @@ import LoginPage from './pages/LoginPage';
 import authAPI from './services/authAPI';
 import AuthContext from './contexts/AuthContext';
 import PrivateRoute from './components/PrivateRoute';
+import CustomerPage from './pages/CustomerPage';
+import InvoicePage from './pages/InvoicePage';
+import RegisterPage from './pages/RegisterPage';
 
 authAPI.setup();
 const App = () => {
@@ -26,7 +30,10 @@ const NavBarWithRouter=withRouter(Navbar);
             <main className="container pt-5">
                 <Switch>
                 <Route path="/login" component={LoginPage}/>
+                    <Route path="/register"  component={RegisterPage}/>  
+                   <PrivateRoute path="/invoices/:id"  component={InvoicePage}/>
                     <PrivateRoute path="/invoices"  component={InvoicesPage}/>
+                    <PrivateRoute path="/customers/:id"  component={CustomerPage} />
                     <PrivateRoute path="/customers"  component={CustomersPage} />
                     <Route path="/" component={HomePage}/>
                 </Switch>

@@ -23,7 +23,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * "invoices_get_subresource"={"path"="/customers/{id}/invoices"}
  * },
  * normalizationContext={
- * "groups"={"customers_resd"}
+ * "groups"={"customers_read"}
  * }
  * )
  * @ApiFilter(SearchFilter::class,properties={"firstName","lastName","company"})
@@ -35,32 +35,32 @@ class Customer
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups({"customers_resd","invoices_read"})
+     * @Groups({"customers_read","invoices_read"})
      * 
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"customers_resd","invoices_read"})
-     * @Assert\NotBlank(message="Le prenom du customer est obligatoire")
+     * @Groups({"customers_read","invoices_read"})
      * @Assert\Length(min=3,minMessage="Le prenom doit faire entre 3 et 225 caracteres",max=225,
      * maxMessage="Le prenom doit faire entre 3 et 225 caracteres")
+     * @Assert\NotBlank(message="Le prenom du customer est obligatoire")
      */
     private $firstName;
 
     /**
      * @ORM\Column(type="string", length=254)
-     * @Groups({"customers_resd","invoices_read"})
-     * @Assert\NotBlank(message="Le de famille du customer est obligatoire")
+     * @Groups({"customers_read","invoices_read"})
      * @Assert\Length(min=3,minMessage="Le nom de famille doit faire entre 3 et 225 caracteres",max=225,
      * maxMessage="Le de famille doit faire entre 3 et 225 caracteres")
+     * @Assert\NotBlank(message="Le de famille du customer est obligatoire")
      */
     private $lastName;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"customers_resd","invoices_read"})
+     * @Groups({"customers_read","invoices_read"})
      * @Assert\NotBlank(message="L'adresse email du customer est obligatoire")
      * @Assert\Email(message="Le format de l'adresse email doit etre valide")
      */
@@ -68,20 +68,20 @@ class Customer
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
-     * @Groups({"customers_resd","invoices_read"})
+     * @Groups({"customers_read","invoices_read"})
      */
     private $company;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Invoice", mappedBy="customer")
-     * @Groups({"customers_resd"})
+     * @Groups({"customers_read"})
      * @ApiSubresource
      */
     private $invoices;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="customers")
-     * @Groups({"customers_resd"})
+     * @Groups({"customers_read"})
      * @ORM\JoinColumn(nullable=false)
      * @Assert\NotBlank(message="L'utilisateur  est obligatoire")
      */
@@ -89,7 +89,7 @@ class Customer
 
     /**
      * Permet de recuperer le totale des invoices
-     *  @Groups({"customers_resd"})
+     *  @Groups({"customers_read"})
      * @return float
      */
 public function getTotalAmount():float {
@@ -101,7 +101,7 @@ return  array_reduce($this->invoices->toArray(),function($total,$invoice){
 
 /**
  * Recuperer le montant total non paye (montant hors facture payer ou annuler)
- *  @Groups({"customers_resd"})
+ *  @Groups({"customers_read"})
  * @return float
  */
 public function getUnpaidAmount():float{

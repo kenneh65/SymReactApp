@@ -4,6 +4,7 @@ import axios from "axios";
 import moment from "moment";
 import ServiceCustomers from "../services/CustomersService";
 import ServiceInvoices from "../services/ServiceInvoices";
+import { Link } from 'react-router-dom';
 
 const STATUS_CLASSE = {
     PAID: "success",
@@ -69,7 +70,13 @@ const InvoicesPage = (props) => {
         itemsPerPage);
     return (
         <>
+           
+
+            <div className="mb-3 d-flex justify-content-between align-items-center">
             <h1>Liste des Factures</h1>
+            <Link className="btn btn-primary" to="/invoices/new">Créer un Factures</Link>
+            </div>
+
             <div className="form-group">
                 <input type="text" onChange={handleSearch} value={search} className="form-control"
                        placeholder="Rechercher ..."/>
@@ -101,9 +108,14 @@ const InvoicesPage = (props) => {
                         </td>
                         <td className="text-center">{invoice.amount.toLocaleString()} GNF</td>
                         <td>
+                        <Link
+                               to={"/invoices/"+invoice.id}
+                                className="btn btn-primary btn-sm mr-1">
+                                Editer
+                        </Link>
                             <button
                                 onClick={() => handleDelete(invoice.id)}
-                                className="btn btn-danger">
+                                className="btn  btn-sm btn-danger">
                                 suprimer
                             </button>
                         </td>
